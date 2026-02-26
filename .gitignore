@@ -1,0 +1,11 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Authentication info
+/auth_info_baileys/
+
+# macOS specific files
+.DS_Store
