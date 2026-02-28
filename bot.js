@@ -11,7 +11,8 @@ async function startBot() {
           });
     sock.ev.on('creds.update', saveCreds);
     // Afficher le QR code
-        sock.ev.on('connection.update', (update) => {
+        sock.evconsole.log('Update reçu:', update); 
+           console.log('Update reçu:', update); // <-- log brut 
         const { qr, connection } = update;
             if (qr) {
             console.log('QR code reçu, scanne-le avec WhatsApp:', qr);
@@ -21,6 +22,7 @@ async function startBot() {
         }
             if (connection === 'close') {
                 console.log('❌ Connexion fermée, relance le bot');
+                
         });
     // Répondre aux messages
     sock.ev.on('messages.upsert', async (msg) => {
