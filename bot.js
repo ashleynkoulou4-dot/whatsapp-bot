@@ -1,67 +1,24 @@
 // bot.js
 
-const { Client } = require('whatsapp-web.js');
-const fs = require('fs');
-const client = new Client();
+const { makeWASocket, useMultiFileAuthState } = require('@whiskeysockets/baileys');
+const P = require('pino');
+async function startBot() {
 
-client.on('ready', () => {
-    console.log('Bot is ready!');
-});
-
-// Anime Commands
-client.on('message', message => {
-    if (message.body.startsWith('!anime')) {
-        // Fetch anime details logic
+    const { state, saveCreds } = await useMultiFileAuthState('auth_info');
+    const sock = makeWASocket({
+        auth: state,
+        printQRInTerminal: true, // affiche le QR code dans le terminal
+        logger: P({ level: 'silent' })
+        });
+    sock.ev.on('creds.update', saveCreds);
+    sock.ev.on('messages.upsert', async (msg) => {
+        const m = msg.messages[0];
+        if (!m.message) return;
+        const text = m.message.conversation;
+        console.log('Message reçu:', text);
+        if (text === 'ping') {
+            await sock.sendMessage(m.key.remoteJid, { text: 'pong' });
+            }
+        });
     }
-});
-
-// Waifu Selection
-client.on('message', message => {
-    if (message.body.startsWith('!waifu')) {
-        // Random waifu selection logic
-    }
-});
-
-// Mood Control
-client.on('message', message => {
-    if (message.body.startsWith('!mood')) {
-        // Mood set and check logic
-    }
-});
-
-// Battle System
-client.on('message', message => {
-    if (message.body.startsWith('!battle')) {
-        // Battle system logic
-    }
-});
-
-// Group Stats
-client.on('message', message => {
-    if (message.body.startsWith('!stats')) {
-        // Group stats logic
-    }
-});
-
-// Achievements
-client.on('message', message => {
-    if (message.body.startsWith('!achieve')) {
-        // Achievements logic
-    }
-});
-
-// Mini-Games
-client.on('message', message => {
-    if (message.body.startsWith('!game')) {
-        // Mini-games logic
-    }
-});
-
-// Group Moderation Tools
-client.on('message', message => {
-    if (message.body.startsWith('!kick')) {
-        // Kick member logic
-    }
-});
-
-client.initialize();
+startBot();
