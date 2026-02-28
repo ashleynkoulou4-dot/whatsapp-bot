@@ -19,6 +19,8 @@ async function startBot() {
     if (connection === 'open') {
     console.log('✅ Bot connecté à WhatsApp');
         }
+            if (connection === 'close') {
+                console.log('❌ Connexion fermée, relance le bot');
         });
     // Répondre aux messages
     sock.ev.on('messages.upsert', async (msg) => {
@@ -28,6 +30,7 @@ async function startBot() {
         console.log('Message reçu:', text);
         if (text === 'ping') {
             await sock.sendMessage(m.key.remoteJid, { text: 'pong' });
+            
             }
         });
     }
